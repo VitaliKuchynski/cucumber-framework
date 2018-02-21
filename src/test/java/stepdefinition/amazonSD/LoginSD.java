@@ -5,16 +5,16 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import framework.amazonPages.AmazonHomePage;
+import framework.amazon.HomePage;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import stepdefinition.SharedSD;
 
 
 
-public class AmazonLoginSD {
+public class LoginSD {
 
-    AmazonHomePage amazonHomePage = new AmazonHomePage();
+    HomePage homePage = new HomePage();
 
     @Given("^I am on home page of Amazon$")
     public void imOnHomepage() {
@@ -23,22 +23,22 @@ public class AmazonLoginSD {
 
     @When("^I Hover over to (Accounts & List)$")
     public void hoverOver(String account) throws InterruptedException {
-        amazonHomePage.mouseoverToSignIn();
+        //mouse over Account&List element
+        homePage.mouseOverAccountList();
 
     }
 
     @And("I click on (Sign in|continue) button")
-    public void clickOnSignInButton(String button) {
+    public void clickOnSignInButton(String button) throws InterruptedException {
         switch (button) {
             case "Sign in":
-                amazonHomePage.clickOnSignInButton();
+                homePage.clickOnSignInButton();
                 break;
             case "continue":
-                //Implement Create account object
-                amazonHomePage.clickONContinueButton();
+                //clicks on continue button
+                homePage.clickONxContinueButton();
                 break;
         }
-
 
     }
 
@@ -47,7 +47,7 @@ public class AmazonLoginSD {
 
         switch (textFields) {
             case "email":
-                amazonHomePage.enterEmail(anyText);
+                homePage.enterEmail(anyText);
                 break;
 
         }
@@ -55,7 +55,6 @@ public class AmazonLoginSD {
 
     @Then("^I verify invalid error message$")
     public void verifyErrorMessage() throws InterruptedException {
-        //Thread.sleep(5000);
         String actualMessage = SharedSD.getDriver().findElement(By.xpath(".//div[@class=\"a-alert-content\"]/descendant::span[@class='a-list-item']")).getText();
         Assert.assertEquals(actualMessage,"We cannot find an account with that email address");
     }

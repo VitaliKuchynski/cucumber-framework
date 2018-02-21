@@ -12,3 +12,6 @@ Feature: Amazon login feature
     And   I enter invalid semen.testerov@gmail.com into email address
     And   I click on continue button
     Then  I verify invalid error message
+
+
+

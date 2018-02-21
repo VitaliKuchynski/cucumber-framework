@@ -1,50 +1,44 @@
 package stepdefinition;
 
-import java.net.MalformedURLException;
-import java.util.concurrent.TimeUnit;
-
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.WebDriver;
+import util.ConfigDrivers;
 import util.ConfigReader;
+import util.ConfigSaucelabs;
 
-import static framework.BasePage.fullscreenWindow;
+import java.net.MalformedURLException;
+
+import static framework.BasePage.pageLoadingWait;
 
 public class SharedSD {
-
+    //Initialise web driver variable
 	private static WebDriver driver = null;
 
 	@Before
     public static void before() throws MalformedURLException {
-
+	    //Instance of config reader
         ConfigReader configReader = new ConfigReader();
-        String browser = configReader.getBrowser();
+        //Instance of config driver
+        ConfigDrivers configDrivers = new ConfigDrivers(configReader.getBrowser());
+        String environment = configReader.getEnvironment();
 
-        switch (browser)
+        switch (environment)
         {
-            case "chrome":
-                System.setProperty("webdriver.chrome.driver", configReader.getChromeDriverPath());
-                driver = new ChromeDriver();
+            case "local":
+                driver = configDrivers.setBrowser();
                 break;
-            case "firefox":
-                System.setProperty("webdriver.gecko.driver", configReader.getFirefoxDriverPath());
-                driver = new FirefoxDriver();
-                break;
-            case "safari":
-                driver = new SafariDriver();
+            case "sauselabs":
+                ConfigSaucelabs configSaucelabs = new ConfigSaucelabs();
+                driver = configSaucelabs.setSaucelabsDriver();
                 break;
             default:
-                driver = new ChromeDriver();
-                System.setProperty("webdriver.chrome.driver", configReader.getChromeDriverPath());
+                driver = configDrivers.setBrowser();
                 break;
         }
-
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        pageLoadingWait(10);
         driver.get(configReader.getUrl());
-        fullscreenWindow();
+        driver.manage().window().maximize();
     }
 
 
@@ -55,7 +49,6 @@ public class SharedSD {
 			driver.quit();
 		}
 	}
-
 	public static WebDriver getDriver() {
 		return driver;
 	}

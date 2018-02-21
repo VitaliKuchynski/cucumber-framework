@@ -1,12 +1,11 @@
-package stepdefinition.fasebookSD;
+package stepdefinition.facebookSD;
 
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import framework.facebookPages.HomePage;
-import framework.facebookPages.LoginPage;
+import framework.facebook.HomePage;
+import framework.facebook.LoginPage;
 import org.testng.Assert;
-import stepdefinition.SharedSD;
 
 
 public class LoginSD {

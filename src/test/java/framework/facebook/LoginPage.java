@@ -1,4 +1,4 @@
-package framework.facebookPages;
+package framework.facebook;
 
 import framework.BasePage;
 import org.openqa.selenium.By;
@@ -10,4 +10,8 @@ public class LoginPage extends BasePage {
 	public String getPageHeader() {
 		return getTextFromElement(pageHeader);
 	}
+
+
+
+
 }

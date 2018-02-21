@@ -2,17 +2,19 @@ package framework;
 
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import org.openqa.selenium.*;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.ui.*;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import stepdefinition.SharedSD;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -26,40 +28,40 @@ public class BasePage {
 
     //Clicks on element
     public void clickOn(By locator) {
-        webDriverFluentWait(locator).click();
+        findAndWaitOfWebElement(locator).click();
     }
 
     //Finds element and enters text
     public void sendText(By locator, String text) {
-        webDriverFluentWait(locator).sendKeys(text);
+        findAndWaitOfWebElement(locator).sendKeys(text);
     }
 
     //Gets element ant returns string value
     public String getTextFromElement(By locator) {
-        return webDriverFluentWait(locator).getText();
+        return findAndWaitOfWebElement(locator).getText();
     }
 
     //Waits, Gets radio-button and check it
     public void checkRadioButton(By locator) {
-        webDriverFluentWait(locator).click();
+        findAndWaitOfWebElement(locator).click();
     }
 
     //Checks if element is selected
-    public boolean isRadioButtonSelected(By locator) {
-        boolean isSelectedResult = webDriverFluentWait(locator).isSelected();
+    public boolean isElementSelected(By locator) {
+        boolean isSelectedResult = findAndWaitOfWebElement(locator).isSelected();
         return isSelectedResult;
 
     }
 
     //Checks if element is displayed
-    public boolean isRadioButtonDisplayed(By locator) {
-        boolean isDisplayedResult = webDriverFluentWait(locator).isDisplayed();
+    public boolean isElementDisplayed(By locator) {
+        boolean isDisplayedResult = findAndWaitOfWebElement(locator).isDisplayed();
         return isDisplayedResult;
     }
 
     //Checks if element is enabled
-    public boolean isRadioButtonEnabled(By locator) {
-        boolean isEnabledResult = webDriverFluentWait(locator).isEnabled();
+    public boolean isElementEnabled(By locator) {
+        boolean isEnabledResult = findAndWaitOfWebElement(locator).isEnabled();
         return isEnabledResult;
     }
 
@@ -161,7 +163,7 @@ public class BasePage {
     }
 
     //Enters text to the alert
-    public void sendKeysToAlert(By locator, String text) {
+    public void sendKeysToAlert(String text) {
         try {
             SharedSD.getDriver().switchTo().alert().sendKeys(text);
             Thread.sleep(3000);
@@ -224,24 +226,22 @@ public class BasePage {
     }
 
     //Looks for specified element in the list
-    public void lookForElement(List<WebElement> list, String text) {
+    public boolean isElementInTheList(List<WebElement> list, String text) {
+        boolean isFound = false;
         for (WebElement ele : list) {
             if (ele.getText().contentEquals(text)) {
                 System.out.println("Element is presented: " + text);
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                isFound = true;
                 break;
             }
         }
+        return isFound;
     }
 
 
     //Hovers over element
     public static void mouseOverElement(By overLocator) throws InterruptedException {
-        WebElement element = webDriverFluentWait(overLocator);
+        WebElement element = findAndWaitOfWebElement(overLocator);
         //Create action instance
         Actions action = new Actions(SharedSD.getDriver());
         action.moveToElement(element).build().perform();
@@ -275,20 +275,21 @@ public class BasePage {
      */
 
     //Implicitly wait
-    public static void implicitlyWate(String url, By locator) {
-        SharedSD.getDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+    public static void implicitlyWate(String url, By locator, int waitingTime) {
+        SharedSD.getDriver().manage().timeouts().implicitlyWait(waitingTime, TimeUnit.SECONDS);
         SharedSD.getDriver().get(url);
         WebElement element = SharedSD.getDriver().findElement(locator);
     }
 
-    //Fluent wait
-    public static WebElement webDriverFluentWait(final By locator) {
+    //Finds and return web element and wait certain time during process
+    public static WebElement findAndWaitOfWebElement(final By locator) {
         Wait<WebDriver> wait = new FluentWait<WebDriver>(SharedSD.getDriver())
-                .withTimeout(5, TimeUnit.SECONDS)
+                .withTimeout(10, TimeUnit.SECONDS)
                 .pollingEvery(1, TimeUnit.SECONDS)
                 .ignoring(NoSuchElementException.class)
                 .ignoring(StaleElementReferenceException.class)
                 .ignoring(ElementNotFoundException.class)
+                .ignoring(java.util.NoSuchElementException.class)
                 .withMessage(" Web driver waited,  element could not be found, Exception has been thrown");
 
         WebElement element = wait.until(new Function<WebDriver,WebElement>() {
@@ -299,33 +300,51 @@ public class BasePage {
         return element;
     }
 
+    //Finds list of web element and wait certain time during process
+    public static List <WebElement> findAndWaitOfWebElements(final By locator) {
+        Wait<WebDriver> wait = new FluentWait<WebDriver>(SharedSD.getDriver())
+                .withTimeout(10, TimeUnit.SECONDS)
+                .pollingEvery(1, TimeUnit.SECONDS)
+                .ignoring(NoSuchElementException.class)
+                .ignoring(StaleElementReferenceException.class)
+                .ignoring(ElementNotFoundException.class)
+                .ignoring(java.util.NoSuchElementException.class)
+                .withMessage(" Web driver waited,  element could not be found, Exception has been thrown");
+
+        List <WebElement> elements = wait.until(new Function<WebDriver,List<WebElement>>() {
+            public List<WebElement> apply(WebDriver driver) {
+                return driver.findElements(locator);
+            }
+        });
+        return elements;
+    }
+
     //Expected waite, timeout 10 sec
-    public static void wateUntilElementClicable(By locator) {
-        WebDriverWait wait = new WebDriverWait(SharedSD.getDriver(), 10);
+    public static void wateUntilElementClicable(By locator, int seconds) {
+        WebDriverWait wait = new WebDriverWait(SharedSD.getDriver(), seconds);
         WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
     }
 
     //Waite until page loading
-    public static void pageLoadingWait() {
-        SharedSD.getDriver().manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+    public static void pageLoadingWait(long timeInSecond) {
+        SharedSD.getDriver().manage().timeouts().pageLoadTimeout(timeInSecond, TimeUnit.SECONDS);
     }
 
     //Script timeout
-    public static void asynchronusScript() {
-        SharedSD.getDriver().manage().timeouts().setScriptTimeout(10, TimeUnit.SECONDS);
+    public static void asynchronusScript(int timeInSecond) {
+        SharedSD.getDriver().manage().timeouts().setScriptTimeout(timeInSecond, TimeUnit.SECONDS);
     }
 
     //Click on element using js executor
-    public static void clickOnElemetByJs(By locator) throws InterruptedException {
-        WebElement element = webDriverFluentWait(locator);
+    public static void clickOnElementByJs(By locator) {
+        WebElement element = findAndWaitOfWebElement(locator);
         JavascriptExecutor js = (JavascriptExecutor) SharedSD.getDriver();
         js.executeScript("argument[0].click();", element);
-        Thread.sleep(5000);
     }
 
 
     //Sets driver browser window
-    public static void setCromeBrowserWindow() {
+    public static void setChromeBrowserWindow() {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("window-size=800,480");
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
@@ -336,6 +355,7 @@ public class BasePage {
 
     //Sets driver browser window to full screen
      public static void fullscreenWindow(){
-        SharedSD.getDriver().manage().window().maximize();
+         SharedSD.getDriver().manage().window().maximize();
+
     }
 }

@@ -1,24 +1,28 @@
-package framework.amazonPages;
+package framework.amazon;
 
 
 import framework.BasePage;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
-public class AmazonHomePage extends BasePage {
+import java.util.List;
+
+public class HomePage extends BasePage {
 
     //Variables with page element
-    private By mouseOverAccountsList = By.xpath("//*[@id=\"nav-link-accountList\"]/span[1]");
-    private By sighInButton = By.xpath("//*[@id=\"nav-flyout-ya-signin\"]");
+    private By mouseOverAccountsList = By.cssSelector("#nav-link-accountList");
+    private By sighInButton = By.xpath(".//div[@class=\'nav-flyout-content\']/descendant::span");
     private By emailTextField = By.xpath("//*[@id=\"ap_email\"]");
     private By continueButton =By.id("continue");
 
     //Mouse  over to Account&List link
-    public void mouseoverToSignIn() throws InterruptedException {
+    public void mouseOverAccountList() throws InterruptedException {
         mouseOverElement(mouseOverAccountsList);
 
     }
     //Clicks on SignIn button in pop up menu
-    public void clickOnSignInButton(){
+    public void clickOnSignInButton() {
+        //clickOnElementByJs(sighInButton);
         clickOn(sighInButton);
     }
     // Enters value to email input field
@@ -27,8 +31,9 @@ public class AmazonHomePage extends BasePage {
     }
 
     //Clicks on continue button
-    public  void clickONContinueButton(){
+    public  void clickONxContinueButton(){
         clickOn(continueButton);
     }
+
 
 }

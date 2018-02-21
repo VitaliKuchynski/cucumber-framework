@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
         snippets = cucumber.api.SnippetType.CAMELCASE,
         
         //Path to your feature file
-        features = {"src/test/resources/amazonFeatures"},
+        features = {"src/test/resources/amazon"},
         // Specify tags to be executed
         tags = {"@amazon-login"},
         //Specify step definition package name (Note: make sure to have this package on current directory) 

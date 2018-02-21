@@ -1,8 +1,7 @@
-package framework.facebookPages;
+package framework.facebook;
 
 import framework.BasePage;
 import org.openqa.selenium.By;
-import ru.yandex.qatools.allure.annotations.Step;
 
 public class HomePage extends BasePage {
 
