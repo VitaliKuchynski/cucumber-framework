@@ -62,7 +62,7 @@ public class BasePage {
     //Checks if element is enabled
     public boolean isElementEnabled(By locator) {
         boolean isEnabledResult = findAndWaitOfWebElement(locator).isEnabled();
-        return isEnabledResult;
+        return  isEnabledResult;
     }
 
 //    //Selects value from drop-down list
@@ -90,9 +90,9 @@ public class BasePage {
 //    }
 
     //Selects current dated from list of days
-    public void selectCurrentDate(List<WebElement> element) throws InterruptedException {
+    public void selectCurrentDate(List<WebElement> element)  {
         //Create formatter to date
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("d");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd");
         //Instance of date, gets current date
         Date date = new Date();
         //Converts date  format to the string format
@@ -102,7 +102,13 @@ public class BasePage {
             String expectedDay = day.getText();
             if (expectedDay.equals(currentDate)) {
                 day.click();
-                Thread.sleep(3000);
+
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
                 break;
             }
         }
@@ -216,6 +222,20 @@ public class BasePage {
             if (ele.getText().contains(text)) {
                 ele.click();
                 try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
+    }
+    //Click on element from the list
+    public void selectOnElementFromList(List<WebElement> list, String text) {
+        for (WebElement ele : list) {
+            if (ele.getText().equalsIgnoreCase(text)) {
+                ele.click();
+                try {
                     Thread.sleep(3000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -275,16 +295,17 @@ public class BasePage {
      */
 
     //Implicitly wait
-    public static void implicitlyWate(String url, By locator, int waitingTime) {
+    public static WebElement implicitlyWaite(String url, By locator, int waitingTime) {
         SharedSD.getDriver().manage().timeouts().implicitlyWait(waitingTime, TimeUnit.SECONDS);
         SharedSD.getDriver().get(url);
         WebElement element = SharedSD.getDriver().findElement(locator);
+       return element;
     }
 
     //Finds and return web element and wait certain time during process
     public static WebElement findAndWaitOfWebElement(final By locator) {
         Wait<WebDriver> wait = new FluentWait<WebDriver>(SharedSD.getDriver())
-                .withTimeout(10, TimeUnit.SECONDS)
+                .withTimeout(15, TimeUnit.SECONDS)
                 .pollingEvery(1, TimeUnit.SECONDS)
                 .ignoring(NoSuchElementException.class)
                 .ignoring(StaleElementReferenceException.class)
@@ -335,11 +356,18 @@ public class BasePage {
         SharedSD.getDriver().manage().timeouts().setScriptTimeout(timeInSecond, TimeUnit.SECONDS);
     }
 
+    //Expected waite, timeout 10 sec
+    public static void wateUntilElementPresent(By locator, int seconds) {
+        WebDriverWait wait = new WebDriverWait(SharedSD.getDriver(), seconds);
+        WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+    }
+
     //Click on element using js executor
-    public static void clickOnElementByJs(By locator) {
+    public static void clickOnElementByJs(By locator) throws InterruptedException {
         WebElement element = findAndWaitOfWebElement(locator);
         JavascriptExecutor js = (JavascriptExecutor) SharedSD.getDriver();
-        js.executeScript("argument[0].click();", element);
+        js.executeScript("arguments[0].click();", element);
+        Thread.sleep(3000);
     }
 
 
