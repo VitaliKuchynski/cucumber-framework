@@ -1,4 +1,4 @@
-package stepdefinition.darksky;
+package stepdefinition.darkskySD;
 
 
 import cucumber.api.java.en.And;
