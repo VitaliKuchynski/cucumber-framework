@@ -12,6 +12,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 public class HomePage extends BasePage{
 
     //Initialise variable and assigns today bar element
@@ -26,6 +28,7 @@ public class HomePage extends BasePage{
     //Initialises variable for
     private By currentMonthDays = By.xpath("//*[@class='pika-table']/tbody/descendant::td");
     private By dateTitle = By.xpath(".//div[@class='date']");
+
     //Initialises List collection for list of month days
     private List<WebElement> listOfMonthDays;
 
@@ -35,7 +38,13 @@ public class HomePage extends BasePage{
     private List<String> expectedListOfWeekDays = new ArrayList<>();
     //Initialise List collection with actual week days
     private List<String> actualListOfWeekDays = new ArrayList<>();
+    Date selectedDate;
+    private String expectedFormatDate;
+    String day;
 
+    public String getExpectedFormatDate() {
+        return expectedFormatDate;
+    }
 
     //Sets list of expected days starting from current date
    public void setListOfExpectedDays(){
@@ -55,6 +64,7 @@ public class HomePage extends BasePage{
            expectedListOfWeekDays.add(format.format(calendar.getTime()));
        }
    }
+
     //Gets text value from listOfWeekDays collection and adds to  actualListOfWeekDays collection
    public void setListOfWeekDaysInString(){
        for (WebElement listOfDays: listOfWeekDays){
@@ -96,18 +106,45 @@ public class HomePage extends BasePage{
     //Clicks on tomorrow's date
     public void selectTomorrowDate() throws InterruptedException {
         setListOfMonthDays();
-        SimpleDateFormat format = new SimpleDateFormat("dd");
+        SimpleDateFormat format = new SimpleDateFormat("d");
         //Instance of calendar
         Calendar calendar = Calendar.getInstance();
         //Sets current date
         calendar.setTime(new Date());
-        calendar.add(Calendar.DATE, 1);
-        String expectedDate =  format.format(calendar.getTime());
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        //Gets date in int format and return suffix in string
+       day = getDayNumberSuffix(calendar.get(Calendar.DAY_OF_MONTH));
+        selectedDate = calendar.getTime();
+        String expectedDate =  format.format(selectedDate);
         for(WebElement list: listOfMonthDays){
             if(list.getText().equals(expectedDate)){
                 list.click();
                 break;
             }
+        }
+
+        expectedFormatDate = convertSelectedDateToExpectedFormat();
+    }
+    //Converts selected date to format
+    public String convertSelectedDateToExpectedFormat(){
+        SimpleDateFormat formatter = new SimpleDateFormat("EEEEE, MMM d'" + day + "', yyyy");
+        return formatter.format(selectedDate);
+    }
+
+    //Gets selected date in int and based on date returns Suffix in string
+    public String getDayNumberSuffix(int day) {
+//        if (day >= 11 && day <= 13) {
+//            return "th";
+//        }
+        switch (day % 10) {
+            case 1:
+                return "st";
+            case 2:
+                return "nd";
+            case 3:
+                return "rd";
+            default:
+                return "th";
         }
     }
     //Verifies is date title is enabled after was clicked

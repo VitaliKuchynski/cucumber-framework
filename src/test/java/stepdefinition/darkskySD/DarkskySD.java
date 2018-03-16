@@ -54,7 +54,7 @@ public class DarkskySD {
 
     @And ("^I verify date is displayed in correct format$")
     public void isDateDisplayedCorrectly(){
-        String expectedResult ="Sunday, Mar 11th, 2018";
+        String expectedResult = homePage.getExpectedFormatDate();
         Assert.assertEquals(homePage.getDateTitleInString(),expectedResult);
 
     }
