@@ -11,9 +11,9 @@ import org.junit.runner.RunWith;
         //This create auto method name in camelCase
         snippets = cucumber.api.SnippetType.CAMELCASE,
         //Path to your feature file
-        features = {"src/test/resources/hotels"},
+        features = {"src/test/resources/darksky"},
         // Specify tags to be executed
-        tags = {"@Hotels-search-verification"},
+        tags = {"@DarkSky"},
         //Specify step definition package name (Note: make sure to have this package on current directory) 
         glue = {"stepdefinition"}
 )
