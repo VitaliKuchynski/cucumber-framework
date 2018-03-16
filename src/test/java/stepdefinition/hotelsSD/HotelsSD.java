@@ -1,4 +1,4 @@
-package stepdefinition.hotels;
+package stepdefinition.hotelsSD;
 
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;

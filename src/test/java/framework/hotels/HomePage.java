@@ -81,7 +81,15 @@ public class HomePage extends BasePage{
     }
     //Enters text to search field and select result from suggestion list
     public void enterTextToSearchField(String text) throws InterruptedException {
-        clickOn(closePoUpLink); //need to be modified
+
+
+//        if(isElementDisplayed(closePoUpLink)){
+        try {
+            clickOn(closePoUpLink);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//             }
         sendText(searchFiled,text);
         Thread.sleep(3000);
         List<WebElement> listOfAutosSuggest = findAndWaitOfWebElements(By.xpath(".//div[@class='autosuggest-category-result']"));
@@ -141,8 +149,7 @@ public class HomePage extends BasePage{
     //Sets period between check in check out and converts it in string format based on month
     public String setCheckInOutDatesPeriod(){
         SimpleDateFormat convert = new SimpleDateFormat("MMMMM");
-        Date current =new Date();
-        String currentMonth = convert.format(current);
+        String currentMonth = convert.format(checkInDate);
         String checkOutMonth = convert.format(checkOutDate);
         //if statement compare months
         if(currentMonth.equalsIgnoreCase(checkOutMonth)){
