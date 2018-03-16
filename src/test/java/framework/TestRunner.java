@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
         //Path to your feature file
         features = {"src/test/resources/hotels"},
         // Specify tags to be executed
-        tags = {"@Hotels"},
+        tags = {"@Hotels-search-verification"},
         //Specify step definition package name (Note: make sure to have this package on current directory) 
         glue = {"stepdefinition"}
 )
