@@ -56,6 +56,7 @@ public class HomePage extends BasePage{
     private By searchResultNightsDetails = By.xpath(".//div[@class='dates-occupancy']/descendant::span[position()=2]");
     //Initialise variable, assigns dates details search
     private By searchResultDatesDetails = By.xpath(".//div[@class='dates-occupancy']/descendant::span[position()=1]");
+    private By packagesMemoLink = By.id("hdr-packages");
     //Initialise collection days year
     private List<WebElement> listYearDays;
     //Initialise collection list of rooms options
@@ -66,6 +67,14 @@ public class HomePage extends BasePage{
     private Date checkOutDate = null;
     //Initialise variable and assign period between check in out dates
      private String checkInOutPeriodResult = null;
+
+
+     //Click on Packages in navigation menu
+    public void clickOnPakagesLink(){
+        clickOn(packagesMemoLink);
+    }
+
+
     //Getters for period of time between check in/out
     public String getCheckInOutPeriodResult() {
         return checkInOutPeriodResult;
@@ -82,12 +91,12 @@ public class HomePage extends BasePage{
     //Enters text to search field and select result from suggestion list
     public void enterTextToSearchField(String text) throws InterruptedException {
 
-
 //        if(isElementDisplayed(closePoUpLink)){
         try {
             clickOn(closePoUpLink);
         } catch (Exception e) {
-            e.printStackTrace();
+            e.getMessage();
+            System.out.println("Element isn't displayed");
         }
 //             }
         sendText(searchFiled,text);

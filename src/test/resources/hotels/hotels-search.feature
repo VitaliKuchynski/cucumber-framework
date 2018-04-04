@@ -22,6 +22,11 @@ Feature: Hotels search future
       And   I verify nights search result is displayed correctly
 
 
+
+
+
+
+
     Examples:
       |city         |
       |San Francisco|
